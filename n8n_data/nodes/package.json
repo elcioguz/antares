@@ -1,0 +1,7 @@
+{
+  "name": "installed-nodes",
+  "private": true,
+  "dependencies": {
+    "n8n-nodes-serpapi": "0.1.8"
+  }
+}

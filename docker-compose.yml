@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg15
+    restart: always
+    environment:
+      - POSTGRES_USER=antares_user
+      - POSTGRES_PASSWORD=antares_pass
+      - POSTGRES_DB=antares
+    volumes:
+      - D:/antares/postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - D:/antares/redis_data:/data
+    command: redis-server --appendonly yes
+
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=supersecretpassword
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=antares
+      - DB_POSTGRESDB_USER=antares_user
+      - DB_POSTGRESDB_PASSWORD=antares_pass
+      - GENERIC_TIMEZONE=Europe/Istanbul
+      - TZ=Europe/Istanbul
+    volumes:
+      - D:/antares/n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
